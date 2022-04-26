@@ -1,4 +1,8 @@
-# Install
+# JS-Client-Widget
+
+Extendable javascript class to easily build some Client script + Popin Widget
+
+## Install
 
 ```/bash
 npm i js-client-widget
@@ -8,7 +12,7 @@ npm i js-client-widget
 yarn add -D js-client-widget
 ```
 
-# Usage
+## Usage
 
 ```js
 // myClient.js
@@ -32,7 +36,7 @@ class Widget extends WidgetBase {
 }
 ```
 
-# Client/Widget interraction (Events handling)
+## Client/Widget interraction (Events handling)
 
 ```js
 // adding an event listener on one side (client or widget)
@@ -47,6 +51,6 @@ this.on('TEST',() => console.log('TEST received '));
 client.fire('TEST',"optionnal additional data !!will be JSON.stringified!!");
 ```
 
-# Demo
+## Demo
 
 https://ldbglobe.github.io/js-client-widget/example/dist/client.html
