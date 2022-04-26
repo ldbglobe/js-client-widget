@@ -1,6 +1,7 @@
 const path = require('path');
 
 const CopyPlugin = require("copy-webpack-plugin");
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   mode: 'development',
@@ -11,7 +12,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
-    library: '_[name]',
+    library: '[name]_ExportedModule',
   },
   plugins: [
     new CopyPlugin({
@@ -20,6 +21,17 @@ module.exports = {
       ],
     }),
   ],
+  optimization: {
+    chunkIds: 'size',
+    moduleIds: 'deterministic',
+    concatenateModules: true,
+    mangleWasmImports: true,
+    mergeDuplicateChunks: false,
+    minimize: true,
+    minimizer: [new TerserPlugin({
+      extractComments: false,
+    })],
+  },
   devtool: 'source-map',
 };
 
