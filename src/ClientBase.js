@@ -4,6 +4,7 @@ import Messenger from "./Messenger.js";
 export default class ClientBase {
 	static ___ = {
 		opened:null,
+		instances:new Set(),
 	};
 	constructor(param) {
 		param = param || {};
@@ -16,7 +17,25 @@ export default class ClientBase {
 		this.___.events = new EventDispatcher(this);
 		this.___.messenger = new Messenger({id:this.___.id});
 		this.___.messenger.on('message',this.___handleMessage.bind(this));
+
+		ClientBase.___.instances.add(this);
 	}
+
+	static invokeAll(methodOrCallback,args) {
+		if(typeof methodOrCallback === "function")
+		{
+			ClientBase.___.instances.forEach(function(client) { methodOrCallback(client) });
+		}
+		else if(typeof methodOrCallback === "string")
+		{
+			ClientBase.___.instances.forEach(function(client) {
+				return typeof client?.[methodOrCallback] === "function" ? client?.[methodOrCallback](...args) : null;
+			});
+		}
+	}
+
+	___getId() { return this.___.id; }
+	getId() { return this.___getId(); }
 
 	/* --------------------------------------------------
 	 * Native available events

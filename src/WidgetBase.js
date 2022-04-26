@@ -23,16 +23,19 @@ export default  class WidgetBase {
 		setTimeout(function(){ this.___.messenger.send({eventName:'ready', data:null}); }.bind(this),0);
 	}
 
+	___getId() { return this.___.id; }
+	getId() { return this.___getId(); }
+
 	/* --------------------------------------------------
 	 * Native available events
 	 * --------------------------------------------------
 	* [no native events]
 	*/
 
-	___on(eventName,callback) { this.___.events.registerEvent(eventName,callback) }
+	___on(eventName,callback) { this.___.events.registerEvent(eventName,callback); }
 	on(eventName,callback) { this.___on(eventName,callback); }
 
-	___off(eventName,callback) { this.___.events.unregisterEvent(eventName,callback) }
+	___off(eventName,callback) { this.___.events.unregisterEvent(eventName,callback); }
 	off(eventName,callback) { this.___off(eventName,callback); }
 
 	// all the events are handled by the messenger services

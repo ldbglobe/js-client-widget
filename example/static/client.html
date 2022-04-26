@@ -32,7 +32,7 @@
         var client2 = new Client()
 
         function logEvent(data,event) {
-            console.log('Widget ID='+event.eventSource.id,event.eventName);
+            console.log('Widget ID='+event.eventSource.getId(),event.eventName);
         };
 
         function initClientBehavior(client,i)
@@ -54,35 +54,32 @@
                 document.querySelector('.clientTrigger[data-id="'+i+'"] span').innerHTML = value;
             }.bind(null,i));
         }
-        function setClientLog(client,i)
-        {
-            client.on('open',logEvent);
-            client.on('ready',logEvent);
-            client.on('select',logEvent);
-            client.on('close',logEvent);
-        }
-        function unsetClientLog(client,i)
-        {
-            client.off('open',logEvent);
-            client.off('ready',logEvent);
-            client.off('select',logEvent);
-            client.off('close',logEvent);
-        }
 
         initClientBehavior(client1,1);
         initClientBehavior(client2,2);
 
+
         function addEventCapture()
         {
             console.log('Client Event Capture Active')
-            setClientLog(client1,'1');
-            setClientLog(client2,'2');
+            // register capture event on all clients
+            Client.invokeAll(function(client){
+                client.on('open',logEvent);
+                client.on('ready',logEvent);
+                client.on('select',logEvent);
+                client.on('close',logEvent);
+            })
         }
         function removeEventCapture()
         {
             console.log('Client Event Capture Innactive')
-            unsetClientLog(client1,'1');
-            unsetClientLog(client2,'2');
+            // unregister capture event on all clients
+            Client.invokeAll(function(client){
+                client.off('open',logEvent);
+                client.off('ready',logEvent);
+                client.off('select',logEvent);
+                client.off('close',logEvent);
+            });
         }
         function toggleEventCapture()
         {
@@ -96,16 +93,15 @@
                 removeEventCapture();
             }
         }
+        // active event capture on startup
+        addEventCapture();
 
         function sendMessageonBoard()
         {
             var message = document.querySelector('.messageToBePublished').value;
             //send to both clients
-            client1.displayMessage(message);
-            client2.displayMessage(message);
+            Client.invokeAll('displayMessage',[message]);
         }
-
-        addEventCapture();
         </script>
     	<button class="clientTrigger" data-id="1" type="button" onclick="client1.open();">Open Widget 1 : value = <span>...</span></button>
         <button class="clientTrigger" data-id="2" type="button" onclick="client2.open();">Open Widget 2 : value = <span>...</span></button>
