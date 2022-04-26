@@ -12,7 +12,7 @@ yarn add -D js-client-widget
 
 ```js
 // myClient.js
-import { ClientBase } from "../../src/index.js"
+import { ClientBase } from "js-client-widget"
 class Client extends ClientBase {
 	constructor(param) {
 		param = param || {};
@@ -23,7 +23,7 @@ class Client extends ClientBase {
 
 ```js
 // myWidget.js
-import { WidgetBase } from "../../src/index.js"
+import { WidgetBase } from "js-client-widget"
 class Widget extends WidgetBase {
 	constructor(param) {
 		param = param || {};

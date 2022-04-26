@@ -7,6 +7,7 @@
     "type": "git",
     "url": "https://github.com/ldbglobe/js-client-widget.git"
   },
+  "main": "src/index.js",
   "scripts": {
     "start": "webpack serve",
     "build": "webpack",
