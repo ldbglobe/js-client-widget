@@ -1,4 +1,4 @@
-import WidgetBase from "../../src/WidgetBase.js"
+import { WidgetBase } from "../../src/index.js"
 
 export default class Widget extends WidgetBase {
 

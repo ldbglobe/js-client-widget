@@ -8,10 +8,15 @@
     "url": "https://github.com/ldbglobe/js-client-widget.git"
   },
   "scripts": {
-    "start": "cd example && webpack serve",
-    "build": "cd example && webpack"
+    "start": "webpack serve",
+    "build": "webpack",
+    "start-example": "cd example && webpack serve",
+    "build-example": "cd example && webpack"
   },
   "devDependencies": {
+    "@babel/core": "^7.17.9",
+    "@babel/preset-env": "^7.16.11",
+    "babel-loader": "^8.2.5",
     "copy-webpack-plugin": "^10.2.4",
     "terser-webpack-plugin": "^5.3.1",
     "webpack": "^5.72.0",

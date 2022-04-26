@@ -1,4 +1,4 @@
-import ClientBase from "../../src/ClientBase.js"
+import { ClientBase } from "../../src/index.js"
 
 export class Client extends ClientBase {
 

@@ -35,7 +35,7 @@ export default class Messenger {
 				version:1,
 				id:this.id,
 				message:message,
-			}));
+			}),"*");
 		}
 	}
 }
