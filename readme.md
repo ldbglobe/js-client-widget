@@ -46,3 +46,7 @@ this.on('TEST',() => console.log('TEST received '));
 // .fire(eventName, [data])
 client.fire('TEST',"optionnal additional data !!will be JSON.stringified!!");
 ```
+
+# Demo
+
+https://ldbglobe.github.io/js-client-widget/example/dist/client.html
