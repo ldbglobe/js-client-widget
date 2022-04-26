@@ -1,0 +1,48 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="./Widget.js"></script>
+    </head>
+    <body>
+        <style>
+        body {
+            background: #444;
+            color: #eee;
+            font-family: sans-serif;
+        }
+        .action-bar {
+            display: flex;
+            flex-direction: row;
+            margin: 0 -5px;
+        }
+        .action-bar button {
+            flex: 1;
+            margin: 0 5px;
+        }
+        .message-board {
+            background: #222;
+            color: #ddd;
+            font-family: monospace;
+            padding: 1em;
+            border-radius: 5px;
+        }
+        </style>
+        <p>Chose A or B to set a selection on the client side</p>
+        <div class="action-bar">
+            <button type="button" onclick="widget.select('A')">A</button>
+            <button type="button" onclick="widget.select('B')">B</button>
+        </div>
+        <p>Display a message from the client here with .displayMessage('....') :</p>
+        <p class="message-board"></p>
+        <script>
+        var widget = new Widget({
+            messageBoard:'.message-board',
+        })
+        </script>
+    </body>
+</html>
