@@ -3,6 +3,13 @@ import WidgetBase from "../../src/WidgetBase.js"
 export default class Widget extends WidgetBase {
 
 	/* --------------------------------------------------
+	 * Inherited methods
+	 * --------------------------------------------------
+	 * getId()
+	 * on(eventName,callback)
+	 * off(eventName,callback)
+	 * fire(eventName,callback)
+	 * --------------------------------------------------
 	 * Native available events name
 	 * --------------------------------------------------
 	 * [no native events]

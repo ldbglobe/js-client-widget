@@ -3,7 +3,16 @@ import ClientBase from "../../src/ClientBase.js"
 export class Client extends ClientBase {
 
 	/* --------------------------------------------------
-	 * Native available events name
+	 * Inherited methods
+	 * --------------------------------------------------
+	 * open()
+	 * close()
+	 * getId()
+	 * on(eventName,callback)
+	 * off(eventName,callback)
+	 * fire(eventName,callback)
+	 * --------------------------------------------------
+	 * Native events name
 	 * --------------------------------------------------
 	 * open
 	 * ready
