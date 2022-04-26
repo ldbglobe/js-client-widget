@@ -1,15 +1,26 @@
 import WidgetBase from "../../src/WidgetBase.js"
 
 export default class Widget extends WidgetBase {
+
+	/* --------------------------------------------------
+	 * Native available events name
+	 * --------------------------------------------------
+	 * [no native events]
+	 * --------------------------------------------------
+	 * Additionnal events from the extended Client class
+	 * --------------------------------------------------
+	 * display-message
+	*/
+
 	constructor(param) {
 		super(param);
 		this.messageBoard = typeof param.messageBoard === "string" ? document.querySelector(param.messageBoard) : param.messageBoard || null;
-		this.on('display-message',this.__handleDisplayMessage.bind(this));
+		this.on('display-message',this.handleDisplayMessage.bind(this));
 	}
 	select(value) {
-		this.messenger.send({eventName:'select',data:value});
+		this.fire('select',value);
 	}
-	__handleDisplayMessage(message) {
+	handleDisplayMessage(message) {
 		if(this.messageBoard)
 			this.messageBoard.innerHTML = message;
 	}

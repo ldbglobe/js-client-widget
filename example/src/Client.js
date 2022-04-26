@@ -3,7 +3,7 @@ import ClientBase from "../../src/ClientBase.js"
 export class Client extends ClientBase {
 
 	/* --------------------------------------------------
-	 * Native available events name from WidgetBase class
+	 * Native available events name
 	 * --------------------------------------------------
 	 * open
 	 * ready
@@ -15,7 +15,7 @@ export class Client extends ClientBase {
 	*/
 
 	displayMessage(message) {
-		this.messenger.send({eventName:'display-message',data:message});
+		this.fire('display-message',message);
 	}
 }
 window.Client = Client;
