@@ -23,6 +23,12 @@ export class Client extends ClientBase {
 	 * select
 	*/
 
+	constructor(param) {
+		param = param || {};
+		param.widgetUrl = param.widgetUrl || './widget.html?custom-url=set-in-the-custom-client-class';
+		super(param);
+	}
+
 	displayMessage(message) {
 		this.fire('display-message',message);
 	}

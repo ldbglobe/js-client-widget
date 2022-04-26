@@ -46,6 +46,8 @@ export default  class WidgetBase {
 		var reg = document.location.hash.match(/#id=([a-z0-9-]+)/)
 		if(reg)
 			return reg[1];
+		else
+			throw `Unable to retrieve the widget ID from location.hash`;
 		return null;
 	}
 

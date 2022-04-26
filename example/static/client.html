@@ -29,7 +29,9 @@
         </style>
         <script>
         var client1= new Client()
-        var client2 = new Client()
+        var client2 = new Client({
+            widgetUrl: './widget.html?custom-url=set-in-client-html-file',
+        })
 
         function logEvent(data,event) {
             console.log('Widget ID='+event.eventSource.getId(),event.eventName);
