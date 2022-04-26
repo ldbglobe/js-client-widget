@@ -23,6 +23,8 @@ export default class Widget extends WidgetBase {
 		super(param);
 		this.messageBoard = typeof param.messageBoard === "string" ? document.querySelector(param.messageBoard) : param.messageBoard || null;
 		this.on('display-message',this.handleDisplayMessage.bind(this));
+
+		this.on('TEST-EVENT',() => console.log('TEST-EVENT received in the widget'));
 	}
 	select(value) {
 		this.fire('select',value);

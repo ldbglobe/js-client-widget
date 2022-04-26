@@ -108,6 +108,7 @@
     	<button class="clientTrigger" data-id="1" type="button" onclick="client1.open();">Open Widget 1 : value = <span>...</span></button>
         <button class="clientTrigger" data-id="2" type="button" onclick="client2.open();">Open Widget 2 : value = <span>...</span></button>
         <button class="clientEventCaptureToggler active" type="button" onclick="toggleEventCapture();">Event Capture</button>
+        <button type="button" onclick="Client.invokeAll(function(client) { client.fire('TEST-EVENT'); });">trigger TEST-EVENT to the widget</button>
         <p>Type here a message published in real time on the widget</p>
         <input class="messageToBePublished" type="text" onkeyup="sendMessageonBoard();" value="Hey! remember me ? I am the message from the client side 😁">
     </body>

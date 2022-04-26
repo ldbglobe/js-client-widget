@@ -27,6 +27,8 @@ export class Client extends ClientBase {
 		param = param || {};
 		param.widgetUrl = param.widgetUrl || './widget.html?custom-url=set-in-the-custom-client-class';
 		super(param);
+
+		this.on('TEST-EVENT',() => console.log('TEST-EVENT received in the client'));
 	}
 
 	displayMessage(message) {
