@@ -70,9 +70,9 @@ export default class ClientBase {
 		this.close();
 
 		// close any other instances  previously opened
-		if(Client.___.opened && Client.___.opened.id !== this.___.id)
-			Client.___.opened.___close();
-		Client.___.opened = this;
+		if(ClientBase.___.opened && ClientBase.___.opened.id !== this.___.id)
+			ClientBase.___.opened.___close();
+		ClientBase.___.opened = this;
 
 		this.___.widgetWindow = window.open(`${this.___.widgetUrl}#id=${this.___.id}`, this.___.id, `resizable,scrollbars,width=640,height=480,top=200,left=200, dependent, modal`);
 		this.___.messenger.setRecipient(this.___.widgetWindow);

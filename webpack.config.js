@@ -4,13 +4,13 @@ const TerserPlugin = require('terser-webpack-plugin');
 module.exports = {
   mode: 'development',
   entry: {
-    'Client': './src/Client.js',
-  	'Widget': './src/Widget.js',
+    'ClientBase': './src/ClientBase.js',
+  	'WidgetBase': './src/WidgetBase.js',
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
-    //library: '[name]_ExportedModule',
+    //library: '[name]_module',
   },
   optimization: {
     chunkIds: 'size',
