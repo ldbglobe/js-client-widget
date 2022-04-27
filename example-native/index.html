@@ -8,7 +8,16 @@
 </head>
 <body>
 	<script>
+	var counter = 0;
 	var client = new ClientComponent({widgetUrl:'widget.html'});
+	client.on('counter++',function(){counter++; refresh(); })
+	client.on('counter--',function(){counter--; refresh(); })
+	function refresh(){
+		document.querySelector('.counter').innerHTML = counter;
+	}
 	</script>
+	<button onclick="client.open();">Open</button>
+	<span class="counter">0</span>
+
 </body>
 </html>

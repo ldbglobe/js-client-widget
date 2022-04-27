@@ -60,4 +60,32 @@ myClient.fire('TEST',"optionnal additional data !!will be JSON.stringified!!");
 
 ## Demonstration
 
-You can consult an simple client/widget demonstration here [https://ldbglobe.github.io/js-client-widget/example/dist/index.html](https://ldbglobe.github.io/js-client-widget/example/dist/index.html)
+You can consult an extended client/widget demonstration here
+[ldbglobe.github.io/js-client-widget/example/dist](https://ldbglobe.github.io/js-client-widget/example/dist)
+
+Or a native implementation (direct call of the components classes)
+[ldbglobe.github.io/js-client-widget/example-native](https://ldbglobe.github.io/js-client-widget/example-native)
+
+Client
+```html
+<script>
+var counter = 0;
+var client = new ClientComponent({widgetUrl:'widget.html'});
+client.on('counter++',function(){counter++; refresh(); })
+client.on('counter--',function(){counter--; refresh(); })
+function refresh(){
+	document.querySelector('.counter').innerHTML = counter;
+}
+</script>
+<button onclick="client.open();">Open</button>
+<span class="counter">0</span>
+```
+
+Widget
+```html
+<script>
+var widget = new WidgetComponent();
+</script>
+<button onclick="widget.fire('counter--');">-</button>
+<button onclick="widget.fire('counter++');">+</button>
+```

@@ -4,9 +4,13 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title></title>
-	<script src="../dist/ClientComponent.js"></script>
+	<script src="../dist/WidgetComponent.js"></script>
 </head>
 <body>
-
+	<script>
+	var widget = new WidgetComponent();
+	</script>
+	<button onclick="widget.fire('counter--');">-</button>
+	<button onclick="widget.fire('counter++');">+</button>
 </body>
 </html>
