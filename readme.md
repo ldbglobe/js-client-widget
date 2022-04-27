@@ -45,12 +45,19 @@ this.on('TEST',() => console.log('TEST received '));
 ```
 
 ```js
-// and just fire an event on the other site (client or widget)
-// eg. from a custom internal method or directly from the instance var using the .fire() method
-// .fire(eventName, [data])
-client.fire('TEST',"optionnal additional data !!will be JSON.stringified!!");
+/**
+ * and just fire an event on the other site (client or widget)
+ * eg. from a custom internal method or directly from the instance var using the .fire() method
+ * myClient.fire(eventName, data, dest)
+ * @param (string)eventName 
+ * @param (mixed)data (must be JSON encodable)
+ * @param (mixed)dest [null,"widget","client"] Target of the event
+ */ 
+myClient.fire('TEST',"optionnal additional data !!will be JSON.stringified!!");
 ```
 
-## Demo
 
-https://ldbglobe.github.io/js-client-widget/example/dist/client.html
+
+## Demonstration
+
+You can consult an simple client/widget demonstration here [https://ldbglobe.github.io/js-client-widget/example/dist/index.html](https://ldbglobe.github.io/js-client-widget/example/dist/index.html)
