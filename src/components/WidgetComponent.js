@@ -20,7 +20,7 @@ export default  class WidgetComponent {
 		this.___.messenger.on('message',this.___handleMessage.bind(this));
 
 		// send a ready message to the opener
-		setTimeout(function(){ this.___fire('widget.ready',null,"client"); }.bind(this),0);
+		setTimeout(function(){ this.___fire('widget.ready',null,"broadcast"); }.bind(this),0);
 	}
 
 	___getId() { return this.___.id; }
@@ -41,10 +41,10 @@ export default  class WidgetComponent {
 	// all the events are handled by the messenger services
 	___fire(eventName,data,dest=null) {
 		// send event to the widget
-		if(dest === null || dest === "client")
+		if(dest === null || dest === "broadcast")
 			this.___.messenger.send({eventName, data});
 		// fire the event locally
-		if(dest === null || dest === "widget")
+		if(dest === null || dest === "local")
 			this.___.events.fireEvent(eventName, data);
 	}
 	fire(eventName,data,dest=null) { this.___fire(eventName,data,dest); }
@@ -62,7 +62,7 @@ export default  class WidgetComponent {
 		if(message.eventName)
 		{
 			// received event => only local dispatch
-			this.___fire(message.eventName,message.data,"widget");
+			this.___fire(message.eventName,message.data,"local");
 		}
 	}
 }

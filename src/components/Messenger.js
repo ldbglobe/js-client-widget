@@ -4,16 +4,16 @@ export default class Messenger {
 	constructor(param) {
 		param = param || {};
 
-		this.recipients = new Set();
-
-		if(param.recipient)
-			this.setRecipient(param.recipient);
+		this.setRecipient(param.recipient);
 
 		this.id = param.id || (()=>([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,a=>(a^Math.random()*16>>a/4).toString(16)))();
 		this.events = new EventDispatcher(this);
 		window.addEventListener('message', this.__handleMessage.bind(this))
 	}
 
+	clearRecipient() {
+		this.recipients = new Set();
+	}
 	setRecipient(browserWindow) {
 		if(browserWindow && browserWindow.length > 0)
 		{
@@ -22,6 +22,10 @@ export default class Messenger {
 		else if(browserWindow)
 		{
 			this.recipients = new Set([browserWindow]);
+		}
+		else
+		{
+			this.clearRecipient();
 		}
 	}
 	addRecipient(browserWindow) {

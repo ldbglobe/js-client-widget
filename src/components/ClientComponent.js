@@ -64,10 +64,10 @@ export default class ClientComponent {
 	// all the events are handled by the messenger services
 	___fire(eventName,data,dest=null) {
 		// send event to the widget
-		if(dest === null || dest === "widget")
+		if(dest === null || dest === "broadcast")
 			this.___.messenger.send({eventName, data});
 		// fire the event locally
-		if(dest === null || dest === "client")
+		if(dest === null || dest === "local")
 			this.___.events.fireEvent(eventName, data);
 	}
 	fire(eventName,data,dest=null) { this.___fire(eventName,data,dest); }
@@ -83,19 +83,19 @@ export default class ClientComponent {
 
 		this.___.widgetWindow = window.open(`${this.___.widgetUrl}#id=${this.___.id}`, this.___.id, `resizable,scrollbars,width=640,height=480,top=200,left=200, dependent, modal`);
 		this.___.messenger.setRecipient(this.___.widgetWindow);
-		this.___fire('widget.open',null,"client");
+		this.___fire('widget.open',null,"local");
 		this.___startDetectionLoop();
 	}
 	open() { this.___open(); }
 
 	___close() {
-		this.___.messenger.setRecipient(null);
+		this.___.messenger.clearRecipient();
 		this.___stopDetectionLoop();
 		if(this.___.widgetWindow && !this.___.widgetWindow.closed)
 		{
 			this.___.widgetWindow.close();
 			this.___.widgetWindow = null;
-			this.___fire('widget.close',null,"client");
+			this.___fire('widget.close',null,"local");
 		}
 	}
 	close() { this.___close(); }
@@ -109,7 +109,7 @@ export default class ClientComponent {
 		if(message.eventName)
 		{
 			// received event => only local dispatch
-			this.___fire(message.eventName, message.data, "client");
+			this.___fire(message.eventName, message.data, "local");
 		}
 	}
 	// passive detection of widget popup close event
@@ -124,7 +124,7 @@ export default class ClientComponent {
 			this.___stopDetectionLoop();
 			// widget is closed don't bother to send any message
 			// just use internal dispatcher
-			this.___fire('widget.close',null,"client");
+			this.___fire('widget.close',null,"local");
 		}
 		else if(!this.___.closeDetectionInterval)
 		{
