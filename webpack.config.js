@@ -4,8 +4,8 @@ const TerserPlugin = require('terser-webpack-plugin');
 module.exports = {
   mode: 'development',
   entry: {
-    'ClientBase': './src/ClientBase.js',
-  	'WidgetBase': './src/WidgetBase.js',
+    'ClientComponent': './src/ClientComponent.js',
+  	'WidgetComponent': './src/WidgetComponent.js',
   },
   output: {
     path: path.resolve(__dirname, 'dist'),

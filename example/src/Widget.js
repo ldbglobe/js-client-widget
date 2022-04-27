@@ -1,14 +1,14 @@
-import { WidgetBase } from "../../src/index.js"
+import { WidgetComponent } from "../../src/index.js"
 
-export default class Widget extends WidgetBase {
+export default class Widget extends WidgetComponent {
 
 	/* --------------------------------------------------
 	 * Inherited methods
 	 * --------------------------------------------------
 	 * getId()
-	 * on(eventName,callback)
-	 * off(eventName,callback)
-	 * fire(eventName,callback)
+	 * on((string)eventName,(function)callback)
+	 * off((string)eventName,(function)callback)
+	 * fire((string)eventName,(mixed)data,([null,client,widget])destination)
 	 * --------------------------------------------------
 	 * Native available events name
 	 * --------------------------------------------------

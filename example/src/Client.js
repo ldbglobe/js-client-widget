@@ -1,6 +1,6 @@
-import { ClientBase } from "../../src/index.js"
+import { ClientComponent } from "../../src/index.js"
 
-export class Client extends ClientBase {
+export class Client extends ClientComponent {
 
 	/* --------------------------------------------------
 	 * Inherited methods
@@ -8,15 +8,15 @@ export class Client extends ClientBase {
 	 * open()
 	 * close()
 	 * getId()
-	 * on(eventName,callback)
-	 * off(eventName,callback)
-	 * fire(eventName,callback)
+	 * on((string)eventName,(function)callback)
+	 * off((string)eventName,(function)callback)
+	 * fire((string)eventName,(mixed)data,([null,client,widget])destination)
 	 * --------------------------------------------------
 	 * Native events name
 	 * --------------------------------------------------
-	 * open
-	 * ready
-	 * close
+	 * widget.open
+	 * widget.ready
+	 * widget.close
 	 * --------------------------------------------------
 	 * Additionnal events from the extenbded Widget class
 	 * --------------------------------------------------

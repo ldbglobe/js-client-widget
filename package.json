@@ -9,10 +9,10 @@
   },
   "main": "src/index.js",
   "scripts": {
-    "start": "webpack serve",
     "build": "webpack",
     "start-example": "cd example && webpack serve",
-    "build-example": "cd example && webpack"
+    "build-example": "cd example && webpack",
+    "build-all": "yarn build && yarn build-example"
   },
   "devDependencies": {
     "@babel/core": "^7.17.9",

@@ -1,7 +1,7 @@
 import EventDispatcher from "./EventDispatcher.js";
 import Messenger from "./Messenger.js";
 
-export default  class WidgetBase {
+export default  class WidgetComponent {
 	static ___ = { };
 
 	constructor(param) {
@@ -20,7 +20,7 @@ export default  class WidgetBase {
 		this.___.messenger.on('message',this.___handleMessage.bind(this));
 
 		// send a ready message to the opener
-		setTimeout(function(){ this.___.messenger.send({eventName:'ready', data:null}); }.bind(this),0);
+		setTimeout(function(){ this.___fire('widget.ready',null,"client"); }.bind(this),0);
 	}
 
 	___getId() { return this.___.id; }
@@ -39,8 +39,15 @@ export default  class WidgetBase {
 	off(eventName,callback) { this.___off(eventName,callback); }
 
 	// all the events are handled by the messenger services
-	___fire(eventName,data) { this.___.messenger.send({eventName, data}); }
-	fire(eventName,callback) { this.___fire(eventName,callback); }
+	___fire(eventName,data,dest=null) {
+		// send event to the widget
+		if(dest === null || dest === "client")
+			this.___.messenger.send({eventName, data});
+		// fire the event locally
+		if(dest === null || dest === "widget")
+			this.___.events.fireEvent(eventName, data);
+	}
+	fire(eventName,data,dest=null) { this.___fire(eventName,data,dest); }
 
 	___extractIdFromBRowserHash() {
 		var reg = document.location.hash.match(/#id=([a-z0-9-]+)/)
@@ -54,7 +61,8 @@ export default  class WidgetBase {
 	___handleMessage(message) {
 		if(message.eventName)
 		{
-			this.___.events.fireEvent(message.eventName,message.data);
+			// received event => only local dispatch
+			this.___fire(message.eventName,message.data,"widget");
 		}
 	}
 }

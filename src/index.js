@@ -1,4 +1,4 @@
-import ClientBase from "./components/ClientBase.js";
-import WidgetBase from "./components/WidgetBase.js";
+import ClientComponent from "./components/ClientComponent.js";
+import WidgetComponent from "./components/WidgetComponent.js";
 
-export { ClientBase, WidgetBase };
+export { ClientComponent, WidgetComponent };

@@ -1,7 +1,7 @@
 import EventDispatcher from "./EventDispatcher.js";
 import Messenger from "./Messenger.js";
 
-export default class ClientBase {
+export default class ClientComponent {
 	static ___ = {
 		opened:null,
 		instances:new Set(),
@@ -29,17 +29,17 @@ export default class ClientBase {
 			throw `widgetUrl parameter can not contain any hash (${this.___.widgetUrl})`
 		}
 
-		ClientBase.___.instances.add(this);
+		ClientComponent.___.instances.add(this);
 	}
 
 	static invokeAll(methodOrCallback,args) {
 		if(typeof methodOrCallback === "function")
 		{
-			ClientBase.___.instances.forEach(function(client) { methodOrCallback(client) });
+			ClientComponent.___.instances.forEach(function(client) { methodOrCallback(client) });
 		}
 		else if(typeof methodOrCallback === "string")
 		{
-			ClientBase.___.instances.forEach(function(client) {
+			ClientComponent.___.instances.forEach(function(client) {
 				return typeof client?.[methodOrCallback] === "function" ? client?.[methodOrCallback](...args) : null;
 			});
 		}
@@ -51,9 +51,9 @@ export default class ClientBase {
 	/* --------------------------------------------------
 	 * Native available events
 	 * --------------------------------------------------
-	 * open
-	 * ready
-	 * close
+	 * widget.open
+	 * widget.ready
+	 * widget.close
 	*/
 	___on(eventName,callback) { this.___.events.registerEvent(eventName,callback) }
 	on(eventName,callback) { this.___on(eventName,callback); }
@@ -62,21 +62,28 @@ export default class ClientBase {
 	off(eventName,callback) { this.___off(eventName,callback); }
 
 	// all the events are handled by the messenger services
-	___fire(eventName,data) { this.___.messenger.send({eventName, data}); }
-	fire(eventName,callback) { this.___fire(eventName,callback); }
+	___fire(eventName,data,dest=null) {
+		// send event to the widget
+		if(dest === null || dest === "widget")
+			this.___.messenger.send({eventName, data});
+		// fire the event locally
+		if(dest === null || dest === "client")
+			this.___.events.fireEvent(eventName, data);
+	}
+	fire(eventName,data,dest=null) { this.___fire(eventName,data,dest); }
 
 	___open() {
 		// close current instance (if previously opened)
 		this.close();
 
 		// close any other instances  previously opened
-		if(ClientBase.___.opened && ClientBase.___.opened.id !== this.___.id)
-			ClientBase.___.opened.___close();
-		ClientBase.___.opened = this;
+		if(ClientComponent.___.opened && ClientComponent.___.opened.id !== this.___.id)
+			ClientComponent.___.opened.___close();
+		ClientComponent.___.opened = this;
 
 		this.___.widgetWindow = window.open(`${this.___.widgetUrl}#id=${this.___.id}`, this.___.id, `resizable,scrollbars,width=640,height=480,top=200,left=200, dependent, modal`);
 		this.___.messenger.setRecipient(this.___.widgetWindow);
-		this.___.events.fireEvent('open');
+		this.___fire('widget.open',null,"client");
 		this.___startDetectionLoop();
 	}
 	open() { this.___open(); }
@@ -88,7 +95,7 @@ export default class ClientBase {
 		{
 			this.___.widgetWindow.close();
 			this.___.widgetWindow = null;
-			this.___.events.fireEvent('close');
+			this.___fire('widget.close',null,"client");
 		}
 	}
 	close() { this.___close(); }
@@ -101,7 +108,8 @@ export default class ClientBase {
 	___handleMessage(message) {
 		if(message.eventName)
 		{
-			this.___.events.fireEvent(message.eventName, message.data);
+			// received event => only local dispatch
+			this.___fire(message.eventName, message.data, "client");
 		}
 	}
 	// passive detection of widget popup close event
@@ -114,7 +122,9 @@ export default class ClientBase {
 		if(this.___.widgetWindow.closed)
 		{
 			this.___stopDetectionLoop();
-			this.___.events.fireEvent('close');
+			// widget is closed don't bother to send any message
+			// just use internal dispatcher
+			this.___fire('widget.close',null,"client");
 		}
 		else if(!this.___.closeDetectionInterval)
 		{
