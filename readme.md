@@ -9,7 +9,7 @@ npm i js-client-widget
 ```
 
 ```/bash
-yarn add -D js-client-widget
+yarn add js-client-widget
 ```
 
 ## Usage
