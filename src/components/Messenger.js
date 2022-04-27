@@ -3,15 +3,38 @@ import EventDispatcher from "./EventDispatcher.js";
 export default class Messenger {
 	constructor(param) {
 		param = param || {};
-		this.recipient = param.recipient || null;
+
+		this.recipients = new Set();
+
+		if(param.recipient)
+			this.setRecipient(param.recipient);
+
 		this.id = param.id || (()=>([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,a=>(a^Math.random()*16>>a/4).toString(16)))();
 		this.events = new EventDispatcher(this);
 		window.addEventListener('message', this.__handleMessage.bind(this))
 	}
 
-	setRecipient(browserWindow)
-	{
-		this.recipient = browserWindow;
+	setRecipient(browserWindow) {
+		if(browserWindow && browserWindow.length > 0)
+		{
+			this.recipients = new Set(browserWindow);
+		}
+		else if(browserWindow)
+		{
+			this.recipients = new Set([browserWindow]);
+		}
+	}
+	addRecipient(browserWindow) {
+		if(browserWindow)
+		{
+			this.recipients.add(browserWindow);
+		}
+	}
+	deleteRecipient(browserWindow) {
+		if(browserWindow)
+		{
+			this.recipients.delete(browserWindow);
+		}
 	}
 
 	getId() {
@@ -28,14 +51,19 @@ export default class Messenger {
 	}
 
 	send(message) {
-		if(this.recipient && typeof this.recipient.postMessage === "function")
+		if(this.recipients.size > 0)
 		{
-			this.recipient.postMessage(JSON.stringify({
-				format:'messenger',
-				version:1,
-				id:this.id,
-				message:message,
-			}),"*");
+			this.recipients.forEach(function(message, recipient) {
+				if(typeof recipient.postMessage === "function")
+				{
+					recipient.postMessage(JSON.stringify({
+						format:'messenger',
+						version:1,
+						id:this.id,
+						message:message,
+					}),"*");
+				}
+			}.bind(this,message));
 		}
 	}
 }
