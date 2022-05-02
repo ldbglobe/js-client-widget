@@ -88,7 +88,7 @@ export default class ClientComponent {
 	}
 	fire(eventName,data,dest=null) { this.___fire(eventName,data,dest); }
 
-	___open() {
+	___open(param) {
 		// close current instance (if previously opened)
 		this.close();
 		// close any extra instances  previously opened
@@ -102,15 +102,22 @@ export default class ClientComponent {
 		if(this.___.widget.height)     windowSettings.push(`height=${this.___.widget.height}`);
 		if(this.___.widget.top)        windowSettings.push(`top=${this.___.widget.top}`);
 		if(this.___.widget.left)       windowSettings.push(`left=${this.___.widget.left}`);
-		console.log(windowSettings.join(','));
-		this.___.widget.window = window.open(`${this.___.widget.url}#id=${this.___.id}`, this.___.id, windowSettings.join(','));
+
+		var widgetUrl = param && param.widgetUrl
+			// if custom widgetUrl set in parameters we simply use it
+			? param.widgetUrl
+			// else if widget url is a function we call it with the received param to build the real url string
+			: (typeof this.___.widget.url === 'function' ? this.___.widget.url(param) : this.___.widget.url);
+
+		this.___.widget.window = window.open(`${widgetUrl}`, this.___.id, windowSettings.join(','));
+
 		ClientComponent.___.opened.add(this);
 		// then set messenger link, send event and start the "close" watcher
 		this.___.messenger.setRecipient(this.___.widget.window);
 		this.___fire('widget.open',null,"local");
 		this.___startDetectionLoop();
 	}
-	open() { this.___open(); }
+	open(param) { this.___open(param); }
 
 	___close() {
 		this.___stopDetectionLoop();
