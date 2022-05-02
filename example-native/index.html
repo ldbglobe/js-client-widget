@@ -8,16 +8,27 @@
 </head>
 <body>
 	<script>
-	var counter = 0;
-	var client = new ClientComponent({widgetUrl:'widget.html'});
-	client.on('counter++',function(){counter++; refresh(); })
-	client.on('counter--',function(){counter--; refresh(); })
+	var counter = [0,0];
+	var client0 = new ClientComponent({widgetUrl:'widget.html', widgetLimit:2 });
+	client0.on('counter++',function(){counter[0]++; refresh(); })
+	client0.on('counter--',function(){counter[0]--; refresh(); })
+
+	var client1 = new ClientComponent({widgetUrl:'widget.html', widgetLimit:2 });
+	client1.on('counter++',function(){counter[1]++; refresh(); })
+	client1.on('counter--',function(){counter[1]--; refresh(); })
+
 	function refresh(){
-		document.querySelector('.counter').innerHTML = counter;
+		document.querySelector('.counter0').innerHTML = counter[0];
+		document.querySelector('.counter1').innerHTML = counter[1];
 	}
 	</script>
-	<button onclick="client.open();">Open</button>
-	<span class="counter">0</span>
-
+	<div>
+		<button onclick="client0.open();">Open</button>
+		<span class="counter0">0</span>
+	</div>
+	<div>
+		<button onclick="client1.open();">Open</button>
+		<span class="counter1">0</span>
+	</div>
 </body>
 </html>

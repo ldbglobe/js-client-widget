@@ -3,35 +3,51 @@ import Messenger from "./Messenger.js";
 
 export default class ClientComponent {
 	static ___ = {
-		opened:null,
+		opened:new Set(),
 		instances:new Set(),
 	};
 	constructor(param) {
 		param = param || {};
+		param.widget = param.widget || {};
 
 		this.___ = {
 			id: (()=>([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,a=>(a^Math.random()*16>>a/4).toString(16)))(),
-			widgetUrl: param.widgetUrl || null,
-			widgetWindow: null,
+			widget: {
+				limit:      param.widget.limit      || param.widgetLimit      || 1,
+				url:        param.widget.url        || param.widgetUrl        || null,
+				resizable:  param.widget.resizable  || param.widgetResizable  || true,
+				scrollbars: param.widget.scrollbars || param.widgetScrollbars || true,
+				dependent:  param.widget.dependent  || param.widgetDependent  || true,
+				width:      param.widget.width      || param.widgetWidth      || 600,
+				height:     param.widget.height     || param.widgetHeight     || 400,
+				top:        param.widget.top        || param.widgetTop        || null,
+				left:       param.widget.left       || param.widgetLeft       || null,
+				window:     null,
+			},
 			closeDetectionInterval: null,
-
 		};
+
+		// position set at screen center if top or left no set
+		this.___.widget.top = this.___.widget.top || (screen.height - this.___.widget.height) / 2;
+		this.___.widget.left = this.___.widget.left || (screen.width - this.___.widget.width) / 2;
+
 		this.___.events = new EventDispatcher(this);
 		this.___.messenger = new Messenger({id:this.___.id});
 		this.___.messenger.on('message',this.___handleMessage.bind(this));
 
-		if(!this.___.widgetUrl)
+		if(!this.___.widget.url)
 		{
-			throw `widgetUrl parameter is mandatory`
+			throw `widge.url parameter is mandatory`
 		}
-		else if(this.___.widgetUrl.match(/#/))
+		else if(this.___.widget.url.match(/#/))
 		{
-			throw `widgetUrl parameter can not contain any hash (${this.___.widgetUrl})`
+			throw `widget.url parameter can not contain any hash (${this.___.widget.url})`
 		}
 
 		ClientComponent.___.instances.add(this);
 	}
 
+	// call a method or apply a calback on all client instances registered
 	static invokeAll(methodOrCallback,args) {
 		if(typeof methodOrCallback === "function")
 		{
@@ -75,26 +91,35 @@ export default class ClientComponent {
 	___open() {
 		// close current instance (if previously opened)
 		this.close();
-
-		// close any other instances  previously opened
-		if(ClientComponent.___.opened && ClientComponent.___.opened.id !== this.___.id)
-			ClientComponent.___.opened.___close();
-		ClientComponent.___.opened = this;
-
-		this.___.widgetWindow = window.open(`${this.___.widgetUrl}#id=${this.___.id}`, this.___.id, `resizable,scrollbars,width=640,height=480,top=200,left=200, dependent, modal`);
-		this.___.messenger.setRecipient(this.___.widgetWindow);
+		// close any extra instances  previously opened
+		this.___openedLimitRelease();
+		// open new window and register the client as opened
+		var windowSettings = [];
+		windowSettings.push(`resizable=${this.___.widget.resizable ? 'yes':'no'}`);
+		windowSettings.push(`scrollbars=${this.___.widget.scrollbars ? 'yes':'no'}`);
+		windowSettings.push(`dependent=${this.___.widget.dependent ? 'yes':'no'}`);
+		if(this.___.widget.width)      windowSettings.push(`width=${this.___.widget.width}`);
+		if(this.___.widget.height)     windowSettings.push(`height=${this.___.widget.height}`);
+		if(this.___.widget.top)        windowSettings.push(`top=${this.___.widget.top}`);
+		if(this.___.widget.left)       windowSettings.push(`left=${this.___.widget.left}`);
+		console.log(windowSettings.join(','));
+		this.___.widget.window = window.open(`${this.___.widget.url}#id=${this.___.id}`, this.___.id, windowSettings.join(','));
+		ClientComponent.___.opened.add(this);
+		// then set messenger link, send event and start the "close" watcher
+		this.___.messenger.setRecipient(this.___.widget.window);
 		this.___fire('widget.open',null,"local");
 		this.___startDetectionLoop();
 	}
 	open() { this.___open(); }
 
 	___close() {
-		this.___.messenger.clearRecipient();
 		this.___stopDetectionLoop();
-		if(this.___.widgetWindow && !this.___.widgetWindow.closed)
+		this.___.messenger.clearRecipient();
+		ClientComponent.___.opened.delete(this);
+		if(this.___.widget.window && !this.___.widget.window.closed)
 		{
-			this.___.widgetWindow.close();
-			this.___.widgetWindow = null;
+			this.___.widget.window.close();
+			this.___.widget.window = null;
 			this.___fire('widget.close',null,"local");
 		}
 	}
@@ -103,6 +128,24 @@ export default class ClientComponent {
 	// **********************************************************
 	// private methods
 	// **********************************************************
+
+	// close older client->widget to set a new free slot
+	___openedLimitRelease() {
+		var deleteCount = ClientComponent.___.opened.size - this.___.widget.limit + 1;
+		var list = Array.from(ClientComponent.___.opened).reverse();
+		for (let c of list) {
+			if(deleteCount>0)
+			{
+				deleteCount--;
+				c.close();
+				ClientComponent.___.opened.delete(c)
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
 
 	// generic message handling and event dispatch
 	___handleMessage(message) {
@@ -119,12 +162,9 @@ export default class ClientComponent {
 		this.___.closeDetectionInterval = null;
 	}
 	___startDetectionLoop() {
-		if(this.___.widgetWindow.closed)
+		if(this.___.widget.window.closed)
 		{
-			this.___stopDetectionLoop();
-			// widget is closed don't bother to send any message
-			// just use internal dispatcher
-			this.___fire('widget.close',null,"local");
+			this.___close();
 		}
 		else if(!this.___.closeDetectionInterval)
 		{
