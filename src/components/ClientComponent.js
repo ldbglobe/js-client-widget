@@ -36,15 +36,6 @@ export default class ClientComponent {
 		this.___.messenger = new Messenger({id:this.___.id});
 		this.___.messenger.on('message',this.___handleMessage.bind(this));
 
-		if(!this.___.widget.url)
-		{
-			throw `widget.url parameter is mandatory`
-		}
-		else if(this.___.widget.url.match(/#/))
-		{
-			throw `widget.url parameter can not contain any hash (${this.___.widget.url})`
-		}
-
 		ClientComponent.___.instances.add(this);
 
 		this.___on('widget.ready',this.___postInitialData.bind(this));
@@ -118,6 +109,12 @@ export default class ClientComponent {
 		if(widgetOptions.left)   windowSettings.push(`left=${widgetOptions.left}`);
 
 		var widgetUrl = widgetOptions.url;
+
+		if(!widgetUrl)
+		{
+			throw `widget url parameter missing`;
+			return ;
+		}
 
 		this.___.initialData = initialData;
 		this.___.widget.window = window.open(widgetUrl, this.___.id, windowSettings.join(','));
