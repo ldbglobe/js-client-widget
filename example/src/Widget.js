@@ -12,7 +12,7 @@ export default class Widget extends WidgetComponent {
 	 * --------------------------------------------------
 	 * Native available events name
 	 * --------------------------------------------------
-	 * [no native events]
+	 * client.postInitialData
 	 * --------------------------------------------------
 	 * Additionnal events from the extended Client class
 	 * --------------------------------------------------

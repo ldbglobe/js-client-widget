@@ -24,6 +24,7 @@ export default class ClientComponent {
 				left:       param.widget.left       || param.widgetLeft       || null,
 				window:     null,
 			},
+			dataToPostOnReady: null,
 			closeDetectionInterval: null,
 		};
 
@@ -37,7 +38,7 @@ export default class ClientComponent {
 
 		if(!this.___.widget.url)
 		{
-			throw `widge.url parameter is mandatory`
+			throw `widget.url parameter is mandatory`
 		}
 		else if(this.___.widget.url.match(/#/))
 		{
@@ -45,6 +46,8 @@ export default class ClientComponent {
 		}
 
 		ClientComponent.___.instances.add(this);
+
+		this.___on('widget.ready',this.___postInitialData.bind(this));
 	}
 
 	// call a method or apply a calback on all client instances registered
@@ -88,28 +91,36 @@ export default class ClientComponent {
 	}
 	fire(eventName,data,dest=null) { this.___fire(eventName,data,dest); }
 
-	___open(param) {
+	___open(widgetOptions=null,initialData=null) {
 		// close current instance (if previously opened)
 		this.close();
 		// close any extra instances  previously opened
 		this.___openedLimitRelease();
 		// open new window and register the client as opened
+
+		widgetOptions = widgetOptions || {};
+		widgetOptions.url        = widgetOptions.url        || this.___.widget.url;
+		widgetOptions.resizable  = widgetOptions.resizable  || this.___.widget.resizable;
+		widgetOptions.scrollbars = widgetOptions.scrollbars || this.___.widget.scrollbars;
+		widgetOptions.dependent  = widgetOptions.dependent  || this.___.widget.dependent;
+		widgetOptions.width      = widgetOptions.width      || this.___.widget.width;
+		widgetOptions.height     = widgetOptions.height     || this.___.widget.height;
+		widgetOptions.top        = widgetOptions.top        || this.___.widget.top;
+		widgetOptions.left       = widgetOptions.left       || this.___.widget.left;
+
 		var windowSettings = [];
-		windowSettings.push(`resizable=${this.___.widget.resizable ? 'yes':'no'}`);
-		windowSettings.push(`scrollbars=${this.___.widget.scrollbars ? 'yes':'no'}`);
-		windowSettings.push(`dependent=${this.___.widget.dependent ? 'yes':'no'}`);
-		if(this.___.widget.width)      windowSettings.push(`width=${this.___.widget.width}`);
-		if(this.___.widget.height)     windowSettings.push(`height=${this.___.widget.height}`);
-		if(this.___.widget.top)        windowSettings.push(`top=${this.___.widget.top}`);
-		if(this.___.widget.left)       windowSettings.push(`left=${this.___.widget.left}`);
+		windowSettings.push(`resizable=${widgetOptions.resizable ? 'yes':'no'}`);
+		windowSettings.push(`scrollbars=${widgetOptions.scrollbars ? 'yes':'no'}`);
+		windowSettings.push(`dependent=${widgetOptions.dependent ? 'yes':'no'}`);
+		if(widgetOptions.width)  windowSettings.push(`width=${widgetOptions.width}`);
+		if(widgetOptions.height) windowSettings.push(`height=${widgetOptions.height}`);
+		if(widgetOptions.top)    windowSettings.push(`top=${widgetOptions.top}`);
+		if(widgetOptions.left)   windowSettings.push(`left=${widgetOptions.left}`);
 
-		var widgetUrl = param && param.widgetUrl
-			// if custom widgetUrl set in parameters we simply use it
-			? param.widgetUrl
-			// else if widget url is a function we call it with the received param to build the real url string
-			: (typeof this.___.widget.url === 'function' ? this.___.widget.url(param) : this.___.widget.url);
+		var widgetUrl = widgetOptions.url;
 
-		this.___.widget.window = window.open(`${widgetUrl}`, this.___.id, windowSettings.join(','));
+		this.___.initialData = initialData;
+		this.___.widget.window = window.open(widgetUrl, this.___.id, windowSettings.join(','));
 
 		ClientComponent.___.opened.add(this);
 		// then set messenger link, send event and start the "close" watcher
@@ -117,7 +128,7 @@ export default class ClientComponent {
 		this.___fire('widget.open',null,"local");
 		this.___startDetectionLoop();
 	}
-	open(param) { this.___open(param); }
+	open(widgetOptions,initialData=null) { this.___open(widgetOptions,initialData); }
 
 	___close() {
 		this.___stopDetectionLoop();
@@ -160,6 +171,16 @@ export default class ClientComponent {
 		{
 			// received event => only local dispatch
 			this.___fire(message.eventName, message.data, "local");
+		}
+	}
+	___postInitialData() {
+		if(this.___.initialData)
+		{
+			this.___.messenger.send({
+				eventName:'client.postInitialData',
+				data:this.___.initialData
+			});
+			// we dont unset the data so each time we reload the data still remain for a new initialization
 		}
 	}
 	// passive detection of widget popup close event

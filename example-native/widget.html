@@ -9,6 +9,7 @@
 <body>
 	<script>
 	var widget = new WidgetComponent();
+	widget.on('client.postInitialData',function(data){ alert(data)});
 	</script>
 	<button onclick="widget.fire('counter--');">-</button>
 	<button onclick="widget.fire('counter++');">+</button>
