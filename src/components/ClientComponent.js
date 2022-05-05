@@ -96,8 +96,8 @@ export default class ClientComponent {
 		widgetOptions.left       = widgetOptions.left       || this.___.widget.left;
 
 		// position set at screen center if top or left no set
-		widgetOptions.top = widgetOptions.top || (screen.height - this.___.widget.height) / 2;
-		widgetOptions.left = widgetOptions.left || (screen.width - this.___.widget.width) / 2;
+		widgetOptions.top = widgetOptions.top || (screen.height - widgetOptions.height) / 2;
+		widgetOptions.left = widgetOptions.left || (screen.width - widgetOptions.width) / 2;
 
 		var windowSettings = [];
 		windowSettings.push(`resizable=${widgetOptions.resizable ? 'yes':'no'}`);
