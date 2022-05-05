@@ -28,10 +28,6 @@ export default class ClientComponent {
 			closeDetectionInterval: null,
 		};
 
-		// position set at screen center if top or left no set
-		this.___.widget.top = this.___.widget.top || (screen.height - this.___.widget.height) / 2;
-		this.___.widget.left = this.___.widget.left || (screen.width - this.___.widget.width) / 2;
-
 		this.___.events = new EventDispatcher(this);
 		this.___.messenger = new Messenger({id:this.___.id});
 		this.___.messenger.on('message',this.___handleMessage.bind(this));
@@ -98,6 +94,10 @@ export default class ClientComponent {
 		widgetOptions.height     = widgetOptions.height     || this.___.widget.height;
 		widgetOptions.top        = widgetOptions.top        || this.___.widget.top;
 		widgetOptions.left       = widgetOptions.left       || this.___.widget.left;
+
+		// position set at screen center if top or left no set
+		widgetOptions.top = widgetOptions.top || (screen.height - this.___.widget.height) / 2;
+		widgetOptions.left = widgetOptions.left || (screen.width - this.___.widget.width) / 2;
 
 		var windowSettings = [];
 		windowSettings.push(`resizable=${widgetOptions.resizable ? 'yes':'no'}`);
