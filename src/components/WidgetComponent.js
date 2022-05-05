@@ -10,6 +10,8 @@ export default  class WidgetComponent {
 		this.___ = {
 			id: param.id || window.name, // as default behavior, JS client set the ID in the windows name
 			parentWindow: param.parentWindow || window.opener,
+			defaults:undefined,
+			defaultsVersion:0,
 		};
 
 		this.___.events = new EventDispatcher(this);
@@ -21,6 +23,8 @@ export default  class WidgetComponent {
 
 		// send a ready message to the opener
 		setTimeout(function(){ this.___fire('widget.ready',null,"broadcast"); }.bind(this),0);
+
+		this.___on('client.postDefaults',this.___handleDefaults.bind(this));
 	}
 
 	___getId() { return this.___.id; }
@@ -29,7 +33,9 @@ export default  class WidgetComponent {
 	/* --------------------------------------------------
 	 * Native available events
 	 * --------------------------------------------------
-	 * client.postInitialData
+	 * client.postDefaults // avoid to use this one
+	 * widget.defaults.init
+	 * widget.defaults.update
 	 */
 
 	___on(eventName,callback) { this.___.events.registerEvent(eventName,callback); }
@@ -57,5 +63,28 @@ export default  class WidgetComponent {
 			// received event => only local dispatch
 			this.___fire(message.eventName,message.data,"local");
 		}
+	}
+
+	___handleDefaults(defaults)	{
+		this.___.defaults = defaults;
+		this.___.defaultsVersion++;
+
+		if(this.___.defaultsVersion===1)
+			this.___fire('widget.defaults.init',this.___.defaults,'local')
+		else
+			this.___fire('widget.defaults.update',this.___.defaults,'local')
+	}
+	___getDefaults() {
+		return this.___.defaults;
+	}
+	getDefaults() {
+		return this.___getDefaults();
+	}
+
+	___isDefaultsAvailable() {
+		return this.___.defaultsVersion>0
+	}
+	isDefaultsAvailable() {
+		return this.___isDefaultsAvailable();
 	}
 }

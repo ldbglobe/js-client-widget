@@ -24,7 +24,8 @@ export default class ClientComponent {
 				left:       param.widget.left       || param.widgetLeft       || null,
 				window:     null,
 			},
-			dataToPostOnReady: null,
+			defaults:undefined, // defaults data (can be set up on widget open)
+			keepDefaults:false, // if set to true, keep defaults data accross widget open/close cycles
 			closeDetectionInterval: null,
 		};
 
@@ -34,7 +35,8 @@ export default class ClientComponent {
 
 		ClientComponent.___.instances.add(this);
 
-		this.___on('widget.ready',this.___postInitialData.bind(this));
+		// handle native defaults data exchange
+		this.___on('widget.ready',this.___postDefaults.bind(this)); // automatic on widget is ready
 	}
 
 	// call a method or apply a calback on all client instances registered
@@ -78,7 +80,7 @@ export default class ClientComponent {
 	}
 	fire(eventName,data,dest=null) { this.___fire(eventName,data,dest); }
 
-	___open(widgetOptions=null,initialData=null) {
+	___open(widgetOptions=null,defaults=undefined) {
 		// close current instance (if previously opened)
 		this.close();
 		// close any extra instances  previously opened
@@ -116,7 +118,9 @@ export default class ClientComponent {
 			return ;
 		}
 
-		this.___.initialData = initialData;
+		if(defaults!==undefined)
+			this.___.defaults = defaults;
+
 		this.___.widget.window = window.open(widgetUrl, this.___.id, windowSettings.join(','));
 
 		ClientComponent.___.opened.add(this);
@@ -125,7 +129,7 @@ export default class ClientComponent {
 		this.___fire('widget.open',null,"local");
 		this.___startDetectionLoop();
 	}
-	open(widgetOptions,initialData=null) { this.___open(widgetOptions,initialData); }
+	open(widgetOptions,defaults=null) { this.___open(widgetOptions,defaults); }
 
 	___close() {
 		this.___stopDetectionLoop();
@@ -135,6 +139,8 @@ export default class ClientComponent {
 		{
 			this.___.widget.window.close();
 			this.___.widget.window = null;
+			if(!this.___.keepDefaults)
+				this.___.defaults = undefined;
 			this.___fire('widget.close',null,"local");
 		}
 	}
@@ -170,16 +176,35 @@ export default class ClientComponent {
 			this.___fire(message.eventName, message.data, "local");
 		}
 	}
-	___postInitialData() {
-		if(this.___.initialData)
+
+	___postDefaults() {
+		if(this.___.defaults)
 		{
 			this.___.messenger.send({
-				eventName:'client.postInitialData',
-				data:this.___.initialData
+				eventName:'client.postDefaults',
+				data:this.___.defaults
 			});
 			// we dont unset the data so each time we reload the data still remain for a new initialization
 		}
 	}
+	postDefaults() {
+		this.___postDefaults()
+	}
+
+	___setDefaults(defaults) {
+		this.___.defaults = defaults;
+		this.___postDefaults(); // send the new defaults
+	}
+	setDefaults(defaults) {
+		this.___setDefaults(defaults)
+	}
+	___keepDefaults(keep) {
+		this.___.keepDefaults = keep;
+	}
+	keepDefaults(keep) {
+		this.___keepDefaults(keep)
+	}
+
 	// passive detection of widget popup close event
 	// we do not need messenging for this
 	___stopDetectionLoop() {
