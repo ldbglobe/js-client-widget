@@ -9,7 +9,7 @@ export default  class WidgetComponent {
 
 		this.___ = {
 			id: param.id || window.name, // as default behavior, JS client set the ID in the windows name
-			parentWindow: param.parentWindow || window.opener.top,
+			parentWindow: param.parentWindow || window.opener,
 			defaults:undefined,
 			defaultsVersion:0,
 		};
