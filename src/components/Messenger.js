@@ -15,18 +15,8 @@ export default class Messenger {
 		this.recipients = new Set();
 	}
 	setRecipient(browserWindow) {
-		if(browserWindow && browserWindow.length > 0)
-		{
-			this.recipients = new Set(browserWindow);
-		}
-		else if(browserWindow)
-		{
-			this.recipients = new Set([browserWindow]);
-		}
-		else
-		{
-			this.clearRecipient();
-		}
+		this.clearRecipient();
+		this.addRecipient(browserWindow);
 	}
 	addRecipient(browserWindow) {
 		if(browserWindow)
@@ -35,7 +25,12 @@ export default class Messenger {
 		}
 	}
 	deleteRecipient(browserWindow) {
-		if(browserWindow)
+		if(browserWindow && browserWindow.length > 0)
+		{
+			for(let i=0; i<browserWindow.length; i++)
+				this.recipients.delete(browserWindow[i]);
+		}
+		else if(browserWindow)
 		{
 			this.recipients.delete(browserWindow);
 		}
@@ -58,6 +53,7 @@ export default class Messenger {
 		if(this.recipients.size > 0)
 		{
 			this.recipients.forEach(function(message, recipient) {
+				console.log(message,recipient,typeof recipient.postMessage);
 				if(typeof recipient.postMessage === "function")
 				{
 					recipient.postMessage(JSON.stringify({
