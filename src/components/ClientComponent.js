@@ -215,6 +215,7 @@ export default class ClientComponent {
 		if(this.___.widget.window.closed)
 		{
 			this.___close();
+			this.___fire('widget.close',null,"local");
 		}
 		else if(!this.___.closeDetectionInterval)
 		{
