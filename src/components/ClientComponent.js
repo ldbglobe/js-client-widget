@@ -37,6 +37,9 @@ export default class ClientComponent {
 
 		// handle native defaults data exchange
 		this.___on('widget.ready',this.___postDefaults.bind(this)); // automatic on widget is ready
+
+		// autoclose widget on client page refresh or close
+		window.addEventListener("beforeunload",this.close.bind(this),true);
 	}
 
 	// call a method or apply a calback on all client instances registered
