@@ -7,52 +7,6 @@
 	<script src="../dist/ClientComponent.js"></script>
 </head>
 <body>
-
-
-<script type="text/javascript">
-var WILDCARD_DOMAIN = "hapi.localhost";
-
-var ENV_ADMIN= true;
-
-var ENV_HID= "670";
-var HOST = "http://hapi.localhost";
-var BASEPATH = "http://hapi.localhost/";
-var APPS_URL = "/admin/HID670/";
-var ENV_PAGE= "auto";
-var ENV_PARAM= "config-base/edit";
-var ENV_LNG= "fr";
-
-var IMAGE_CUSTOM_QUALITY= "70";
-var IMAGE_LAZY_MODE= "blur";
-var ENV_MOBILE = "";
-var ENV_TABLET = "";
-
-var ENV_ID= "";
-var ENV_DEV= true;
-var ENV_DEBUG= false;
-
-var ENV_HPE_UUID = "";
-var ENV_PUSHMARKETING_UUID = "";
-var ENV_HAPIDAM_UUID = "a6469cd7-6c9001dd-2d54fd5b-c6d57289-a787e46d-c512cd3f-80aab653-f666a7fb";
-var ENV_HAPIDAM_STATUS = "1";
-
-var ENV_CONFIG = {
-    hid: 670,
-    rgpd_allow_video: true,
-    country_code: "",
-}
-
-var CKEDITOR_CSS = new Array();
-CKEDITOR_CSS.push('http://hapi.localhost/assets/dev/css?HID=670&load=ckeditor_content&hash=c89e9f9966b48908edf0edc7736c19ca7130e01d');
-var CKEDITOR_CUSTOM_STYLESET = [{"name":"primary-bg (Bg)","element":"span","attributes":{"class":"ckBg_primary-bg"}},{"name":"primary-bg (Txt)","element":"span","attributes":{"class":"ckColor_primary-bg"}},{"name":"primary-text (Bg)","element":"span","attributes":{"class":"ckBg_primary-text"}},{"name":"primary-text (Txt)","element":"span","attributes":{"class":"ckColor_primary-text"}},{"name":"primary-text-alt (Bg)","element":"span","attributes":{"class":"ckBg_primary-text-alt"}},{"name":"primary-text-alt (Txt)","element":"span","attributes":{"class":"ckColor_primary-text-alt"}},{"name":"secondary-bg (Bg)","element":"span","attributes":{"class":"ckBg_secondary-bg"}},{"name":"secondary-bg (Txt)","element":"span","attributes":{"class":"ckColor_secondary-bg"}},{"name":"secondary-text (Bg)","element":"span","attributes":{"class":"ckBg_secondary-text"}},{"name":"secondary-text (Txt)","element":"span","attributes":{"class":"ckColor_secondary-text"}},{"name":"secondary-text-alt (Bg)","element":"span","attributes":{"class":"ckBg_secondary-text-alt"}},{"name":"secondary-text-alt (Txt)","element":"span","attributes":{"class":"ckColor_secondary-text-alt"}},{"name":"css_mavar (Bg)","element":"span","attributes":{"class":"ckBg_css_mavar"}},{"name":"css_mavar (Txt)","element":"span","attributes":{"class":"ckColor_css_mavar"}}];
-</script>
-
-<script src="http://localhost:1337/client.js"></script>
-
-<script type="text/javascript" src="http://hapi.localhost/assets/dev/js?HID=670&load=admin&hash=c89e9f9966b48908edf0edc7736c19ca7130e01d"></script>
-<script type="text/javascript" src="http://hapi.localhost/assets/vendors/ckeditor/ckeditor.js?hash=JB9D"></script>
-
-
 	<script>
 	var counter = [0,0];
 	var client0 = new ClientComponent({widgetUrl:'widget.html', widgetLimit:2 });
@@ -76,14 +30,5 @@ var CKEDITOR_CUSTOM_STYLESET = [{"name":"primary-bg (Bg)","element":"span","attr
 		<button onclick="client1.open();">Open</button>
 		<span class="counter1">0</span>
 	</div>
-
-	<textarea
-wrap="off"
-class="form-control wysiwyg"
-style="height:200px;"
-id="data_book_bpp_extrapanel_fr"
-name="data_book_bpp_extrapanel[fr]"
-placeholder=""
-><p></p></textarea>
 </body>
 </html>
