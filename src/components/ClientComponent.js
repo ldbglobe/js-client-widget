@@ -1,5 +1,5 @@
-import EventDispatcher from "./EventDispatcher.js";
-import Messenger from "./Messenger.js";
+import EventDispatcher from "js-class.event-dispatcher";
+import Messenger from "js-class.messenger";
 
 export default class ClientComponent {
 	static ___ = {
@@ -30,8 +30,8 @@ export default class ClientComponent {
 		};
 
 		this.___.events = new EventDispatcher(this);
-		this.___.messenger = new Messenger({id:this.___.id});
-		this.___.messenger.on('message',this.___handleMessage.bind(this));
+		this.___.messenger = new Messenger({channel:this.___.id});
+		this.___.messenger.onMessage(this.___handleMessage.bind(this));
 
 		ClientComponent.___.instances.add(this);
 
@@ -76,10 +76,14 @@ export default class ClientComponent {
 	___fire(eventName,data,dest=null) {
 		// send event to the widget
 		if(dest === null || dest === "broadcast")
+		{
 			this.___.messenger.send({eventName, data});
+		}
 		// fire the event locally
 		if(dest === null || dest === "local")
+		{
 			this.___.events.fireEvent(eventName, data);
+		}
 	}
 	fire(eventName,data,dest=null) { this.___fire(eventName,data,dest); }
 
@@ -128,7 +132,6 @@ export default class ClientComponent {
 
 		ClientComponent.___.opened.add(this);
 		// then set messenger link, send event and start the "close" watcher
-		this.___.messenger.setRecipient(this.___.widget.window);
 		this.___fire('widget.open',null,"local");
 		this.___startDetectionLoop();
 	}
@@ -136,7 +139,6 @@ export default class ClientComponent {
 
 	___close() {
 		this.___stopDetectionLoop();
-		this.___.messenger.clearRecipient();
 		ClientComponent.___.opened.delete(this);
 		if(this.___.widget.window && !this.___.widget.window.closed)
 		{

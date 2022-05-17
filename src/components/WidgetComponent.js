@@ -1,5 +1,5 @@
-import EventDispatcher from "./EventDispatcher.js";
-import Messenger from "./Messenger.js";
+import EventDispatcher from "js-class.event-dispatcher";
+import Messenger from "js-class.messenger";
 
 export default  class WidgetComponent {
 	static ___ = { };
@@ -9,17 +9,15 @@ export default  class WidgetComponent {
 
 		this.___ = {
 			id: param.id || window.name, // as default behavior, JS client set the ID in the windows name
-			parentWindow: param.parentWindow || window.opener,
 			defaults:undefined,
 			defaultsVersion:0,
 		};
 
+		console.log(this.___.id)
+
 		this.___.events = new EventDispatcher(this);
-		this.___.messenger = new Messenger({
-			id:this.___.id,
-			recipient: this.___.parentWindow
-		});
-		this.___.messenger.on('message',this.___handleMessage.bind(this));
+		this.___.messenger = new Messenger({channel:this.___.id});
+		this.___.messenger.onMessage(this.___handleMessage.bind(this));
 
 		// send a ready message to the opener
 		setTimeout(function(){ this.___fire('widget.ready',null,"broadcast"); }.bind(this),0);
@@ -53,7 +51,9 @@ export default  class WidgetComponent {
 		}
 		// fire the event locally
 		if(dest === null || dest === "local")
+		{
 			this.___.events.fireEvent(eventName, data);
+		}
 	}
 	fire(eventName,data,dest=null) { this.___fire(eventName,data,dest); }
 
