@@ -2286,10 +2286,10 @@ js-class.event-dispatcher@^1.0.0:
   resolved "https://registry.yarnpkg.com/js-class.event-dispatcher/-/js-class.event-dispatcher-1.0.0.tgz#6e12a47c624a40750ef5e7525798253d2350d7c9"
   integrity sha512-pJgE3UhS8qyEMFVRQe3zh00/VOnNSLCHA4Yy0yup2SnOsX4zqLHoxPTTjWjVjp0odEu5ecywYnWBR1XcP5asXg==
 
-js-class.messenger@^1.0.2:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/js-class.messenger/-/js-class.messenger-1.0.4.tgz#32fac82a440a10cc657ca85d8a33271cf76e0ab4"
-  integrity sha512-9UzJLfGdPkZJjQNhadr6/h3n6+vFMPUE4aAT8oJpP38hokrceD4HNPrqptkK5rhkaC9QOjJXqGP5TD+HMeg5+w==
+js-class.messenger@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/js-class.messenger/-/js-class.messenger-1.0.5.tgz#28967f9ff6b61ee9b7f8f9b496ac372e9dec28ba"
+  integrity sha512-tytgYzH1P3x4aT7QzPWPvvFbBDzCInhGNR4xkEfin8rpzC+6XGJ16wANuKxQMEmTQ23Izq5WoSempkjPUei/XA==
   dependencies:
     js-class.event-dispatcher "^1.0.0"
 
