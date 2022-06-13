@@ -9,11 +9,12 @@
 <body>
 	<script>
 	var widget = new WidgetComponent();
-	widget.on('widget.defaults.init',function(data){ alert(data)});
+	widget.on('widget.defaults.init',function(data){ document.querySelector('#init-message-container').innerHTML = data.sample.message; });
 	</script>
 	<button onclick="widget.fire('counter--');">-</button>
 	<button onclick="widget.fire('counter++');">+</button>
-
 	<button onclick="widget.isDefaultsAvailable() ? alert(widget.getDefaults()):null;">getDefaults</button>
+
+	<p id="init-message-container"></p>
 </body>
 </html>

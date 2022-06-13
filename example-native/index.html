@@ -21,9 +21,20 @@
 		document.querySelector('.counter0').innerHTML = counter[0];
 		document.querySelector('.counter1').innerHTML = counter[1];
 	}
+
+	var initial_data = {
+		what_is_it:'here are the data send by the client after widget initialisation',
+		when_those_data_are_sent:'when the widget class is instantiated is opened it send a "widget.ready" event to the client',
+		and_host_the_client_sent_data_back:'the client sens data to the widget with a "client.postDefaults" event',
+		what_type_of_data_can_i_send:'Any JSON format complatible data',
+		and_now_here_my_sample_data:'... wait for it',
+		sample: {
+			message:'Somewhere over the yellow brick road<br>👧🥿🌪️🦁🤖🧑‍🌾🧙'
+		}
+	}
 	</script>
 	<div>
-		<button onclick="client0.open({width:400,height:300},'This message was send by the client after widget.ready event');">Open</button>
+		<button onclick="client0.open({width:400,height:300},initial_data);">Open</button>
 		<span class="counter0">0</span>
 	</div>
 	<div>
