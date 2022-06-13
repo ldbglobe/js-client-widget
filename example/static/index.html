@@ -104,6 +104,7 @@
             //send to both clients
             Client.invokeAll('displayMessage',[message]);
         }
+        Client.setOpenLimit(2);
         </script>
     	<button class="clientTrigger" data-id="1" type="button" onclick="client1.open();">Open Widget 1 : value = <span>...</span></button>
         <button class="clientTrigger" data-id="2" type="button" onclick="client2.open();">Open Widget 2 : value = <span>...</span></button>
@@ -111,5 +112,7 @@
         <button type="button" onclick="Client.invokeAll(function(client) { client.fire('TEST-EVENT',null,'broadcast'); });">trigger TEST-EVENT to the widget</button>
         <p>Type here a message published in real time on the widget</p>
         <input class="messageToBePublished" type="text" onkeyup="sendMessageonBoard();" value="Hey! remember me ? I am the message from the client side 😁">
+        <p>Set opened widgets limit (N<=0 mean no limit)</p>
+        <input type="number" value=2 onchange="Client.setOpenLimit(this.value)">
     </body>
 </html>

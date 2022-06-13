@@ -9,11 +9,11 @@
 <body>
 	<script>
 	var counter = [0,0];
-	var client0 = new ClientComponent({widgetUrl:'widget.html', widgetLimit:2 });
+	var client0 = new ClientComponent({widgetUrl:'widget.html' });
 	client0.on('counter++',function(){counter[0]++; refresh(); })
 	client0.on('counter--',function(){counter[0]--; refresh(); })
 
-	var client1 = new ClientComponent({widgetUrl:'widget.html', widgetLimit:2 });
+	var client1 = new ClientComponent({widgetUrl:'widget.html' });
 	client1.on('counter++',function(){counter[1]++; refresh(); })
 	client1.on('counter--',function(){counter[1]--; refresh(); })
 

@@ -4,6 +4,7 @@ import Messenger from "js-class.messenger";
 export default class ClientComponent {
 	static ___ = {
 		opened:new Set(),
+		openLimit:null,
 		instances:new Set(),
 	};
 	constructor(param) {
@@ -13,7 +14,6 @@ export default class ClientComponent {
 		this.___ = {
 			id: (()=>([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,a=>(a^Math.random()*16>>a/4).toString(16)))(),
 			widget: {
-				limit:      param.widget.limit      || param.widgetLimit      || 1,
 				url:        param.widget.url        || param.widgetUrl        || null,
 				resizable:  param.widget.resizable  || param.widgetResizable  || true,
 				scrollbars: param.widget.scrollbars || param.widgetScrollbars || true,
@@ -40,6 +40,29 @@ export default class ClientComponent {
 
 		// autoclose widget on client page refresh or close
 		window.addEventListener("beforeunload",this.close.bind(this),true);
+	}
+
+	static setOpenLimit(limit) {
+		ClientComponent.___.openLimit = limit;
+		ClientComponent.openLimitApply();
+	}
+
+	// close older client->widget to set a new free slot
+	static openLimitApply(releaseASlot=false) {
+		if(ClientComponent.___.openLimit>0)
+		{
+			var limit = ClientComponent.___.openLimit
+			var opened = ClientComponent.___.opened.size + (releaseASlot ? 1:0);
+			if(opened > limit)
+			{
+				var c = Array.from(ClientComponent.___.opened)[0];
+				if(c)
+				{
+					c.close();
+					ClientComponent.openLimitApply(releaseASlot);
+				}
+			}
+		}
 	}
 
 	// call a method or apply a calback on all client instances registered
@@ -91,7 +114,7 @@ export default class ClientComponent {
 		// close current instance (if previously opened)
 		this.close();
 		// close any extra instances  previously opened
-		this.___openedLimitRelease();
+		ClientComponent.openLimitApply(true);
 		// open new window and register the client as opened
 
 		widgetOptions = widgetOptions || {};
@@ -154,24 +177,6 @@ export default class ClientComponent {
 	// **********************************************************
 	// private methods
 	// **********************************************************
-
-	// close older client->widget to set a new free slot
-	___openedLimitRelease() {
-		var deleteCount = ClientComponent.___.opened.size - this.___.widget.limit + 1;
-		var list = Array.from(ClientComponent.___.opened).reverse();
-		for (let c of list) {
-			if(deleteCount>0)
-			{
-				deleteCount--;
-				c.close();
-				ClientComponent.___.opened.delete(c)
-			}
-			else
-			{
-				break;
-			}
-		}
-	}
 
 	// generic message handling and event dispatch
 	___handleMessage(message) {
