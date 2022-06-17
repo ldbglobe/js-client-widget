@@ -152,6 +152,7 @@ export default class ClientComponent {
 			this.___.defaults = defaults;
 
 		this.___.widget.window = window.open(widgetUrl, this.___.id, windowSettings.join(','));
+		this.___.messenger.addRecipient(this.___.widget.window);
 
 		ClientComponent.___.opened.add(this);
 		// then set messenger link, send event and start the "close" watcher
