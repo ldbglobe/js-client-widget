@@ -2,22 +2,22 @@ import EventDispatcher from "js-class.event-dispatcher";
 import Messenger from "js-class.messenger";
 
 export default  class WidgetComponent {
-	static ___ = { };
+	static statics = { };
 
 	constructor(param) {
 		param = param || {};
 
-		this.___ = {
+		this.statics = {
 			id: param.id || window.name, // as default behavior, JS client set the ID in the windows name
 			defaults:undefined,
 			defaultsVersion:0,
 		};
 
-		console.log(this.___.id)
+		console.log(this.statics.id)
 
-		this.___.events = new EventDispatcher(this);
-		this.___.messenger = new Messenger({channel:this.___.id});
-		this.___.messenger.onMessage(this.___handleMessage.bind(this));
+		this.statics.events = new EventDispatcher(this);
+		this.statics.messenger = new Messenger({channel:this.statics.id});
+		this.statics.messenger.onMessage(this.___handleMessage.bind(this));
 
 		// send a ready message to the opener
 		setTimeout(function(){ this.___fire('widget.ready',null,"broadcast"); }.bind(this),0);
@@ -25,7 +25,7 @@ export default  class WidgetComponent {
 		this.___on('client.postDefaults',this.___handleDefaults.bind(this));
 	}
 
-	___getId() { return this.___.id; }
+	___getId() { return this.statics.id; }
 	getId() { return this.___getId(); }
 
 	/* --------------------------------------------------
@@ -36,10 +36,10 @@ export default  class WidgetComponent {
 	 * widget.defaults.update
 	 */
 
-	___on(eventName,callback) { this.___.events.registerEvent(eventName,callback); }
+	___on(eventName,callback) { this.statics.events.registerEvent(eventName,callback); }
 	on(eventName,callback) { this.___on(eventName,callback); }
 
-	___off(eventName,callback) { this.___.events.unregisterEvent(eventName,callback); }
+	___off(eventName,callback) { this.statics.events.unregisterEvent(eventName,callback); }
 	off(eventName,callback) { this.___off(eventName,callback); }
 
 	// all the events are handled by the messenger services
@@ -47,12 +47,12 @@ export default  class WidgetComponent {
 		// send event to the widget
 		if(dest === null || dest === "broadcast")
 		{
-			this.___.messenger.send({eventName, data});
+			this.statics.messenger.send({eventName, data});
 		}
 		// fire the event locally
 		if(dest === null || dest === "local")
 		{
-			this.___.events.fireEvent(eventName, data);
+			this.statics.events.fireEvent(eventName, data);
 		}
 	}
 	fire(eventName,data,dest=null) { this.___fire(eventName,data,dest); }
@@ -66,23 +66,23 @@ export default  class WidgetComponent {
 	}
 
 	___handleDefaults(defaults)	{
-		this.___.defaults = defaults;
-		this.___.defaultsVersion++;
+		this.statics.defaults = defaults;
+		this.statics.defaultsVersion++;
 
-		if(this.___.defaultsVersion===1)
-			this.___fire('widget.defaults.init',this.___.defaults,'local')
+		if(this.statics.defaultsVersion===1)
+			this.___fire('widget.defaults.init',this.statics.defaults,'local')
 		else
-			this.___fire('widget.defaults.update',this.___.defaults,'local')
+			this.___fire('widget.defaults.update',this.statics.defaults,'local')
 	}
 	___getDefaults() {
-		return this.___.defaults;
+		return this.statics.defaults;
 	}
 	getDefaults() {
 		return this.___getDefaults();
 	}
 
 	___isDefaultsAvailable() {
-		return this.___.defaultsVersion>0
+		return this.statics.defaultsVersion>0
 	}
 	isDefaultsAvailable() {
 		return this.___isDefaultsAvailable();

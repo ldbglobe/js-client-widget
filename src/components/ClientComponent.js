@@ -2,7 +2,7 @@ import EventDispatcher from "js-class.event-dispatcher";
 import Messenger from "js-class.messenger";
 
 export default class ClientComponent {
-	static ___ = {
+	static statics = {
 		opened:new Set(),
 		openLimit:null,
 		instances:new Set(),
@@ -11,7 +11,7 @@ export default class ClientComponent {
 		param = param || {};
 		param.widget = param.widget || {};
 
-		this.___ = {
+		this.statics = {
 			id: (()=>([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,a=>(a^Math.random()*16>>a/4).toString(16)))(),
 			widget: {
 				url:        param.widget.url        || param.widgetUrl        || null,
@@ -29,11 +29,11 @@ export default class ClientComponent {
 			closeDetectionInterval: null,
 		};
 
-		this.___.events = new EventDispatcher(this);
-		this.___.messenger = new Messenger({channel:this.___.id});
-		this.___.messenger.onMessage(this.___handleMessage.bind(this));
+		this.statics.events = new EventDispatcher(this);
+		this.statics.messenger = new Messenger({channel:this.statics.id});
+		this.statics.messenger.onMessage(this.___handleMessage.bind(this));
 
-		ClientComponent.___.instances.add(this);
+		ClientComponent.statics.instances.add(this);
 
 		// handle native defaults data exchange
 		this.___on('widget.ready',this.___postDefaults.bind(this)); // automatic on widget is ready
@@ -43,19 +43,19 @@ export default class ClientComponent {
 	}
 
 	static setOpenLimit(limit) {
-		ClientComponent.___.openLimit = limit;
+		ClientComponent.statics.openLimit = limit;
 		ClientComponent.openLimitApply();
 	}
 
 	// close older client->widget to set a new free slot
 	static openLimitApply(releaseASlot=false) {
-		if(ClientComponent.___.openLimit>0)
+		if(ClientComponent.statics.openLimit>0)
 		{
-			var limit = ClientComponent.___.openLimit
-			var opened = ClientComponent.___.opened.size + (releaseASlot ? 1:0);
+			var limit = ClientComponent.statics.openLimit
+			var opened = ClientComponent.statics.opened.size + (releaseASlot ? 1:0);
 			if(opened > limit)
 			{
-				var c = Array.from(ClientComponent.___.opened)[0];
+				var c = Array.from(ClientComponent.statics.opened)[0];
 				if(c)
 				{
 					c.close();
@@ -69,17 +69,17 @@ export default class ClientComponent {
 	static invokeAll(methodOrCallback,args) {
 		if(typeof methodOrCallback === "function")
 		{
-			ClientComponent.___.instances.forEach(function(client) { methodOrCallback(client) });
+			ClientComponent.statics.instances.forEach(function(client) { methodOrCallback(client) });
 		}
 		else if(typeof methodOrCallback === "string")
 		{
-			ClientComponent.___.instances.forEach(function(client) {
+			ClientComponent.statics.instances.forEach(function(client) {
 				return typeof client?.[methodOrCallback] === "function" ? client?.[methodOrCallback](...args) : null;
 			});
 		}
 	}
 
-	___getId() { return this.___.id; }
+	___getId() { return this.statics.id; }
 	getId() { return this.___getId(); }
 
 	/* --------------------------------------------------
@@ -89,10 +89,10 @@ export default class ClientComponent {
 	 * widget.ready
 	 * widget.close
 	*/
-	___on(eventName,callback) { this.___.events.registerEvent(eventName,callback) }
+	___on(eventName,callback) { this.statics.events.registerEvent(eventName,callback) }
 	on(eventName,callback) { this.___on(eventName,callback); }
 
-	___off(eventName,callback) { this.___.events.unregisterEvent(eventName,callback) }
+	___off(eventName,callback) { this.statics.events.unregisterEvent(eventName,callback) }
 	off(eventName,callback) { this.___off(eventName,callback); }
 
 	// all the events are handled by the messenger services
@@ -100,12 +100,12 @@ export default class ClientComponent {
 		// send event to the widget
 		if(dest === null || dest === "broadcast")
 		{
-			this.___.messenger.send({eventName, data});
+			this.statics.messenger.send({eventName, data});
 		}
 		// fire the event locally
 		if(dest === null || dest === "local")
 		{
-			this.___.events.fireEvent(eventName, data);
+			this.statics.events.fireEvent(eventName, data);
 		}
 	}
 	fire(eventName,data,dest=null) { this.___fire(eventName,data,dest); }
@@ -118,14 +118,14 @@ export default class ClientComponent {
 		// open new window and register the client as opened
 
 		widgetOptions = widgetOptions || {};
-		widgetOptions.url        = widgetOptions.url        || this.___.widget.url;
-		widgetOptions.resizable  = widgetOptions.resizable  || this.___.widget.resizable;
-		widgetOptions.scrollbars = widgetOptions.scrollbars || this.___.widget.scrollbars;
-		widgetOptions.dependent  = widgetOptions.dependent  || this.___.widget.dependent;
-		widgetOptions.width      = widgetOptions.width      || this.___.widget.width;
-		widgetOptions.height     = widgetOptions.height     || this.___.widget.height;
-		widgetOptions.top        = widgetOptions.top        || this.___.widget.top;
-		widgetOptions.left       = widgetOptions.left       || this.___.widget.left;
+		widgetOptions.url        = widgetOptions.url        || this.statics.widget.url;
+		widgetOptions.resizable  = widgetOptions.resizable  || this.statics.widget.resizable;
+		widgetOptions.scrollbars = widgetOptions.scrollbars || this.statics.widget.scrollbars;
+		widgetOptions.dependent  = widgetOptions.dependent  || this.statics.widget.dependent;
+		widgetOptions.width      = widgetOptions.width      || this.statics.widget.width;
+		widgetOptions.height     = widgetOptions.height     || this.statics.widget.height;
+		widgetOptions.top        = widgetOptions.top        || this.statics.widget.top;
+		widgetOptions.left       = widgetOptions.left       || this.statics.widget.left;
 
 		// position set at screen center if top or left no set
 		widgetOptions.top = widgetOptions.top || (screen.height - widgetOptions.height) / 2;
@@ -149,12 +149,12 @@ export default class ClientComponent {
 		}
 
 		if(defaults!==undefined)
-			this.___.defaults = defaults;
+			this.statics.defaults = defaults;
 
-		this.___.widget.window = window.open(widgetUrl, this.___.id, windowSettings.join(','));
-		this.___.messenger.addRecipient(this.___.widget.window);
+		this.statics.widget.window = window.open(widgetUrl, this.statics.id, windowSettings.join(','));
+		this.statics.messenger.addRecipient(this.statics.widget.window);
 
-		ClientComponent.___.opened.add(this);
+		ClientComponent.statics.opened.add(this);
 		// then set messenger link, send event and start the "close" watcher
 		this.___fire('widget.open',null,"local");
 		this.___startDetectionLoop();
@@ -163,13 +163,13 @@ export default class ClientComponent {
 
 	___close() {
 		this.___stopDetectionLoop();
-		ClientComponent.___.opened.delete(this);
-		if(this.___.widget.window && !this.___.widget.window.closed)
+		ClientComponent.statics.opened.delete(this);
+		if(this.statics.widget.window && !this.statics.widget.window.closed)
 		{
-			this.___.widget.window.close();
-			this.___.widget.window = null;
-			if(!this.___.keepDefaults)
-				this.___.defaults = undefined;
+			this.statics.widget.window.close();
+			this.statics.widget.window = null;
+			if(!this.statics.keepDefaults)
+				this.statics.defaults = undefined;
 			this.___fire('widget.close',null,"local");
 		}
 	}
@@ -189,11 +189,11 @@ export default class ClientComponent {
 	}
 
 	___postDefaults() {
-		if(this.___.defaults)
+		if(this.statics.defaults)
 		{
-			this.___.messenger.send({
+			this.statics.messenger.send({
 				eventName:'client.postDefaults',
-				data:this.___.defaults
+				data:this.statics.defaults
 			});
 			// we dont unset the data so each time we reload the data still remain for a new initialization
 		}
@@ -203,14 +203,14 @@ export default class ClientComponent {
 	}
 
 	___setDefaults(defaults) {
-		this.___.defaults = defaults;
+		this.statics.defaults = defaults;
 		this.___postDefaults(); // send the new defaults
 	}
 	setDefaults(defaults) {
 		this.___setDefaults(defaults)
 	}
 	___keepDefaults(keep) {
-		this.___.keepDefaults = keep;
+		this.statics.keepDefaults = keep;
 	}
 	keepDefaults(keep) {
 		this.___keepDefaults(keep)
@@ -219,18 +219,18 @@ export default class ClientComponent {
 	// passive detection of widget popup close event
 	// we do not need messenging for this
 	___stopDetectionLoop() {
-		clearInterval(this.___.closeDetectionInterval);
-		this.___.closeDetectionInterval = null;
+		clearInterval(this.statics.closeDetectionInterval);
+		this.statics.closeDetectionInterval = null;
 	}
 	___startDetectionLoop() {
-		if(this.___.widget.window.closed)
+		if(this.statics.widget.window.closed)
 		{
 			this.___close();
 			this.___fire('widget.close',null,"local");
 		}
-		else if(!this.___.closeDetectionInterval)
+		else if(!this.statics.closeDetectionInterval)
 		{
-			this.___.closeDetectionInterval = setInterval(this.___startDetectionLoop.bind(this),10);
+			this.statics.closeDetectionInterval = setInterval(this.___startDetectionLoop.bind(this),10);
 		}
 	}
 }
