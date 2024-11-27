@@ -28,11 +28,11 @@ export class Client extends ClientComponent {
 		param.widgetUrl = param.widgetUrl || './widget.html?custom-url=set-in-the-custom-client-class';
 		super(param);
 
-		this.on('TEST-EVENT',() => console.log('TEST-EVENT received in the client'));
+		this.on('TEST-EVENT', (data) => console.log('TEST-EVENT received in the client', data));
 	}
 
 	displayMessage(message) {
-		this.fire('display-message',message);
+		this.fire('display-message', message);
 	}
 }
 window.Client = Client;
